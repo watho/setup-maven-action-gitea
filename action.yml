@@ -110,7 +110,7 @@ runs:
         distribution: '${{ inputs.java-distribution }}'
       
     - name: File Hash for Cache      
-      uses: https://gitea.com/seepine/hash-files
+      uses: https://gitea.com/seepine/hash-files@v1
       if: inputs.cache-enabled == 'true'
       id: pom-hash
       with: 
