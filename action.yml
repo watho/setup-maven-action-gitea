@@ -108,6 +108,17 @@ runs:
         overwrite-settings: false
         java-version: '${{ inputs.java-version }}'
         distribution: '${{ inputs.java-distribution }}'
+      
+    - uses: actions/setup-go@v5.0.0
+      if: inputs.cache-enabled == 'true'
+      with:
+        go-version: '1.20'
+    
+    - uses: https://gitea.com/actions/go-hashfiles.git@v0.0.1
+      id: pom-hash
+      with:
+        patterns: |-
+          '**/pom.xml'
 
     - uses: actions/cache@v4
       if: inputs.cache-enabled == 'true'
@@ -115,7 +126,7 @@ runs:
         path: |
           ${{ inputs.cache-path }}
           ${{ inputs.cache-path-add }}
-        key: ${{ inputs.cache-prefix }}${{ runner.os }}-jdk${{ inputs.java-version }}-${{ inputs.java-distribution }}-maven${{ inputs.maven-version }}-${{ hashFiles('**/pom.xml') }}
+        key: ${{ inputs.cache-prefix }}${{ runner.os }}-jdk${{ inputs.java-version }}-${{ inputs.java-distribution }}-maven${{ inputs.maven-version }}-${{ steps.pom-hash.outputs.hash }}
         restore-keys: ${{ inputs.cache-prefix }}${{ runner.os }}-jdk${{ inputs.java-version }}-${{ inputs.java-distribution }}-maven${{ inputs.maven-version }}-
 
     - name: Installed Maven version
